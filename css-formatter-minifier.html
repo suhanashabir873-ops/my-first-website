@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>CSS Formatter & Minifier | Clean & Modern Tool</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #e9f0fc 0%, #d9e2ef 100%);
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      padding: 2rem 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Main card container */
+    .tool-container {
+      max-width: 1400px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(0px);
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    /* Header area */
+    .header {
+      background: #1e293b;
+      padding: 1.5rem 2rem;
+      text-align: center;
+      border-bottom: 3px solid #3b82f6;
+    }
+
+    .header h1 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: #f8fafc;
+      margin-bottom: 0.25rem;
+    }
+
+    .header p {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      font-weight: 400;
+    }
+
+    /* Two column layout for textareas */
+    .panels {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      padding: 2rem 2rem 1.5rem 2rem;
+      background: #ffffff;
+    }
+
+    .panel {
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .panel-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .panel-label span {
+      font-weight: 600;
+      font-size: 1.1rem;
+      background: #f1f5f9;
+      padding: 0.2rem 0.9rem;
+      border-radius: 40px;
+      color: #0f172a;
+      letter-spacing: -0.2px;
+    }
+
+    .char-count {
+      font-size: 0.75rem;
+      background: #e2e8f0;
+      padding: 0.2rem 0.7rem;
+      border-radius: 20px;
+      color: #334155;
+      font-family: monospace;
+    }
+
+    textarea {
+      width: 100%;
+      height: 380px;
+      padding: 1rem 1.2rem;
+      font-family: 'Fira Code', 'Cascadia Code', 'Source Code Pro', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      background: #fefefe;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 1.25rem;
+      resize: vertical;
+      outline: none;
+      transition: all 0.2s;
+      color: #0f172a;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    textarea:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+      background: #ffffff;
+    }
+
+    /* Button group */
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin: 0.5rem 2rem 1.2rem 2rem;
+    }
+
+    .btn {
+      border: none;
+      background: #f1f5f9;
+      padding: 0.75rem 1.6rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      color: #1e293b;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+      box-shadow: 0 4px 8px rgba(59,130,246,0.2);
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 18px -6px rgba(37,99,235,0.3);
+    }
+
+    .btn-secondary {
+      background: #334155;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #1e293b;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: white;
+      border: 1.5px solid #cbd5e1;
+    }
+
+    .btn-outline:hover {
+      border-color: #3b82f6;
+      background: #f8fafc;
+      transform: translateY(-1px);
+    }
+
+    .copy-btn {
+      background: #10b981;
+      color: white;
+      box-shadow: 0 2px 6px rgba(16,185,129,0.2);
+    }
+
+    .copy-btn:hover {
+      background: #059669;
+      transform: translateY(-2px);
+    }
+
+    /* success toast message */
+    .toast-msg {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.9);
+      background: #1f2937;
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 0.7rem 1.6rem;
+      border-radius: 60px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      white-space: nowrap;
+      font-family: monospace;
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    /* footer & responsiveness */
+    .footer-note {
+      background: #f8fafc;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.75rem;
+      color: #475569;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 780px) {
+      body {
+        padding: 1rem;
+      }
+      .panels {
+        padding: 1.5rem;
+        gap: 1.2rem;
+      }
+      .action-buttons {
+        margin: 0 1.2rem 1rem 1.2rem;
+      }
+      .btn {
+        padding: 0.6rem 1.2rem;
+      }
+      textarea {
+        height: 280px;
+      }
+      .header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="tool-container">
+  <div class="header">
+    <h1>🎨 CSS Formatter & Minifier</h1>
+    <p>Beautify messy CSS or compress it for production — lightning fast, client‑side</p>
+  </div>
+
+  <div class="panels">
+    <!-- INPUT PANEL -->
+    <div class="panel">
+      <div class="panel-label">
+        <span>📄 Input CSS</span>
+        <span class="char-count" id="inputCharCount">0 chars</span>
+      </div>
+      <textarea id="inputCSS" placeholder="/* Paste or write your CSS here */&#10;&#10;body { margin: 0; background: #fff; } .container { display: flex; }"></textarea>
+    </div>
+
+    <!-- OUTPUT PANEL -->
+    <div class="panel">
+      <div class="panel-label">
+        <span>✨ Output CSS</span>
+        <span class="char-count" id="outputCharCount">0 chars</span>
+      </div>
+      <textarea id="outputCSS" placeholder="Formatted or minified CSS will appear here..." readonly></textarea>
+    </div>
+  </div>
+
+  <div class="action-buttons">
+    <button class="btn btn-primary" id="formatBtn">✨ Format CSS (Beautify)</button>
+    <button class="btn btn-secondary" id="minifyBtn">⚡ Minify CSS (Compress)</button>
+    <button class="btn copy-btn" id="copyBtn">📋 Copy to Clipboard</button>
+    <button class="btn btn-outline" id="clearBtn">🗑️ Clear All</button>
+  </div>
+  <div class="footer-note">
+    ⚡ Minify removes spaces, line breaks & comments | ✨ Format adds indentation & readability
+  </div>
+</div>
+
+<!-- Toast message container -->
+<div id="copyToast" class="toast-msg">✅ Copied to clipboard!</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const inputTextarea = document.getElementById('inputCSS');
+    const outputTextarea = document.getElementById('outputCSS');
+    const formatBtn = document.getElementById('formatBtn');
+    const minifyBtn = document.getElementById('minifyBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const inputCharSpan = document.getElementById('inputCharCount');
+    const outputCharSpan = document.getElementById('outputCharCount');
+    const toastEl = document.getElementById('copyToast');
+
+    // Helper: update character counters
+    function updateCounters() {
+      const inputLen = inputTextarea.value.length;
+      const outputLen = outputTextarea.value.length;
+      inputCharSpan.textContent = inputLen + ' char' + (inputLen !== 1 ? 's' : '');
+      outputCharSpan.textContent = outputLen + ' char' + (outputLen !== 1 ? 's' : '');
+    }
+
+    // Show temporary success message for copy
+    function showCopyMessage() {
+      toastEl.classList.add('show');
+      setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 2000);
+    }
+
+    // ========================
+    // 1. CSS FORMATTER (beautify) - proper indentation, line breaks, readable structure
+    // Handles nested rules, media queries, keyframes gracefully.
+    // Approach: token-aware lightweight CSS formatter (preserve meaning, add newlines/indentation)
+    // ========================
+    function formatCSS(cssText) {
+      if (!cssText || cssText.trim() === '') {
+        return '';
+      }
+
+      // Step 1: Basic normalization: remove extra whitespace but keep structure.
+      // We'll add proper spacing. First, remove all comments? In formatter we usually keep comments but format them.
+      // But for clean output we keep original comments but ensure they don't break indentation.
+      // However to avoid doubling spaces, we use a robust approach: tokenize blocks.
+      
+      // Remove unnecessary carriage returns and standardize line breaks to \n
+      let working = cssText.replace(/\r\n?/g, '\n');
+      
+      // Simple but effective CSS beautifier using regex and indentation logic.
+      // We'll break rules by braces and semicolons, but careful with strings.
+      // For sake of reliability without external lib: we implement a safe indenter.
+      
+      // 1. Remove excess whitespace around braces and semicolons for predictable tokenization
+      // But we want to keep at least spaces between selectors.
+      // We'll do: add newline before opening brace? Better standard method.
+      
+      // Approach: Insert newlines after '{', '}', ';' but protect content inside quotes.
+      // Using a placeholder for string content.
+      const css = working;
+      
+      // Replace strings and comments temporarily to avoid breaking them.
+      let stringMap = [];
+      let stringCounter = 0;
+      // Protect double-quoted strings
+      let protected = css.replace(/(["'])(?:(?=(\\?))\2.)*?\1/g, (match) => {
+        let placeholder = `__CSS_STRING_${stringCounter}__`;
+        stringMap.push({ original: match, placeholder });
+        stringCounter++;
+        return placeholder;
+      });
+      
+      // Protect comments (we will keep them but indent them properly, but for formatting we need comment blocks to not interfere with rule splitting)
+      let commentMap = [];
+      let commentCounter = 0;
+      protected = protected.replace(/\/\*[\s\S]*?\*\//g, (match) => {
+        let placeholder = `__CSS_COMMENT_${commentCounter}__`;
+        commentMap.push({ original: match, placeholder });
+        commentCounter++;
+        return placeholder;
+      });
+      
+      // Now insert newlines and spaces: add newline after '{', before '}', after ';' but not inside rules.
+      // Also add newline before '@' for at-rules clarity.
+      let formatted = protected;
+      // Add newline after opening brace
+      formatted = formatted.replace(/\{/g, '{\n');
+      // Add newline before closing brace
+      formatted = formatted.replace(/\}/g, '\n}\n');
+      // Add newline after semicolon (except when it's last before closing)
+      formatted = formatted.replace(/;\s*/g, ';\n');
+      // Add newline before '@' at-rules for readability
+      formatted = formatted.replace(/@/g, '\n@');
+      // Collapse multiple newlines into max two
+      formatted = formatted.replace(/\n\s*\n\s*\n/g, '\n\n');
+      formatted = formatted.replace(/[ \t]+\n/g, '\n');
+      
+      // Now split into lines and apply indentation based on brace depth
+      let lines = formatted.split('\n');
+      let indentLevel = 0;
+      const indentUnit = '  '; // two spaces for clean indentation
+      let resultLines = [];
+      
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        if (line.length === 0) continue;
+        
+        // Count braces to adjust indent: first check closing braces reduces level
+        let openBraces = (line.match(/\{/g) || []).length;
+        let closeBraces = (line.match(/\}/g) || []).length;
+        
+        // For lines that contain closing brace, we reduce indent before writing
+        let currentIndent = indentLevel;
+        if (closeBraces > 0 && !line.includes('{')) {
+          // typical line only closing brace(s) -> reduce before
+          currentIndent = Math.max(0, indentLevel - closeBraces);
+        }
+        
+        let indentedLine = indentUnit.repeat(currentIndent) + line;
+        resultLines.push(indentedLine);
+        
+        // Update indent level after the line (for subsequent lines)
+        indentLevel += openBraces;
+        indentLevel -= closeBraces;
+        if (indentLevel < 0) indentLevel = 0;
+      }
+      
+      let finalFormatted = resultLines.join('\n');
+      
+      // Restore protected strings and comments
+      for (let i = 0; i < stringMap.length; i++) {
+        finalFormatted = finalFormatted.replace(new RegExp(stringMap[i].placeholder, 'g'), stringMap[i].original);
+      }
+      for (let i = 0; i < commentMap.length; i++) {
+        finalFormatted = finalFormatted.replace(new RegExp(commentMap[i].placeholder, 'g'), commentMap[i].original);
+      }
+      
+      // Clean up extra spaces before commas (selector formatting)
+      finalFormatted = finalFormatted.replace(/,[\s]*\n/g, ',\n');
+      finalFormatted = finalFormatted.replace(/\n\s*\n/g, '\n');
+      
+      // Ensure final newline at end of file
+      finalFormatted = finalFormatted.trim() + (finalFormatted.endsWith('\n') ? '' : '\n');
+      return finalFormatted;
+    }
+    
+    // ========================
+    // 2. CSS MINIFIER: remove spaces, line breaks, comments, compress efficiently
+    // ========================
+    function minifyCSS(cssText) {
+      if (!cssText || cssText.trim() === '') {
+        return '';
+      }
+      
+      let minified = cssText;
+      
+      // 1. Remove CSS comments (/* ... */) — these are safe to strip in minification
+      minified = minified.replace(/\/\*[\s\S]*?\*\//g, '');
+      
+      // 2. Remove whitespace around special characters: { } ; : , > + ~ [ ] = 
+      // but careful not to break selectors. General approach: remove unnecessary spaces and newlines.
+      // Replace all whitespace (spaces, tabs, newlines) with single spaces first
+      minified = minified.replace(/\s+/g, ' ');
+      
+      // 3. Remove spaces before/after these tokens: { } ; : , 
+      minified = minified.replace(/\s*\{\s*/g, '{');
+      minified = minified.replace(/\s*\}\s*/g, '}');
+      minified = minified.replace(/\s*;\s*/g, ';');
+      minified = minified.replace(/\s*:\s*/g, ':');
+      minified = minified.replace(/\s*,\s*/g, ',');
+      minified = minified.replace(/\s*>\s*/g, '>');
+      minified = minified.replace(/\s*\+\s*/g, '+');
+      minified = minified.replace(/\s*~\s*/g, '~');
+      
+      // 4. Remove spaces before and after brackets and attribute selectors:
+      minified = minified.replace(/\s*\[\s*/g, '[');
+      minified = minified.replace(/\s*\]\s*/g, ']');
+      minified = minified.replace(/\s*=\s*/g, '=');
+      
+      // 5. Remove last semicolon inside blocks (optional but reduces bytes)
+      minified = minified.replace(/;}/g, '}');
+      
+      // 6. Remove spaces around '!' important but keep '!important'
+      minified = minified.replace(/\s*!\s*important\s*/g, '!important');
+      
+      // 7. Trim leading/trailing spaces
+      minified = minified.trim();
+      
+      // 8. Additional: collapse multiple semicolons (if any)
+      minified = minified.replace(/;+/g, ';');
+      
+      return minified;
+    }
+    
+    // Main handler for formatting
+    function handleFormat() {
+      let inputVal = inputTextarea.value;
+      if (!inputVal || inputVal.trim() === '') {
+        alert('⚠️ Nothing to format! Please enter some CSS code.');
+        return;
+      }
+      try {
+        let beautified = formatCSS(inputVal);
+        outputTextarea.value = beautified;
+        updateCounters();
+      } catch (err) {
+        console.error(err);
+        alert('Formatting error: Could not parse CSS structure properly. Please check your syntax.');
+      }
+    }
+    
+    // Main handler for minifying
+    function handleMinify() {
+      let inputVal = inputTextarea.value;
+      if (!inputVal || inputVal.trim() === '') {
+        alert('⚠️ No CSS to minify! Please provide CSS code.');
+        return;
+      }
+      try {
+        let compressed = minifyCSS(inputVal);
+        outputTextarea.value = compressed;
+        updateCounters();
+      } catch (err) {
+        console.error(err);
+        alert('Minification error: Something went wrong while compressing.');
+      }
+    }
+    
+    // Copy to clipboard with fallback
+    function copyToClipboard() {
+      const outputContent = outputTextarea.value;
+      if (!outputContent || outputContent.trim() === '') {
+        alert('❌ Output area is empty. Please format or minify CSS first.');
+        return;
+      }
+      
+      // Use modern clipboard API
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(outputContent).then(() => {
+          showCopyMessage();
+        }).catch(err => {
+          console.warn('Clipboard error: ', err);
+          fallbackCopy(outputContent);
+        });
+      } else {
+        fallbackCopy(outputContent);
+      }
+    }
+    
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      showCopyMessage();
+    }
+    
+    // Clear both textareas
+    function handleClear() {
+      inputTextarea.value = '';
+      outputTextarea.value = '';
+      updateCounters();
+      // Optionally focus on input
+      inputTextarea.focus();
+    }
+    
+    // Event listeners
+    formatBtn.addEventListener('click', handleFormat);
+    minifyBtn.addEventListener('click', handleMinify);
+    copyBtn.addEventListener('click', copyToClipboard);
+    clearBtn.addEventListener('click', handleClear);
+    
+    // Real-time char counter for both input and output (when output manually cleared etc)
+    inputTextarea.addEventListener('input', function() {
+      updateCounters();
+      // optional: we do not auto-format, only update counter
+    });
+    
+    // Also if output changes via any other method (should not except our actions), but keep counters in sync
+    // Observer for output (just in case)
+    const outputObserver = new MutationObserver(() => updateCounters());
+    outputObserver.observe(outputTextarea, { attributes: true, childList: true, subtree: false, characterData: true });
+    // Also listen to property changes
+    outputTextarea.addEventListener('input', updateCounters);
+    
+    // Initialize counters and example default (useful demonstration)
+    // Pre-populate input with a moderate demo to showcase the tool
+    const demoCSS = `/* Example: Responsive card design */
+.card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+}
+
+.card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #0f172a;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 1rem;
+  }
+  .card h2 {
+    font-size: 1.25rem;
+  }
+}`;
+    
+    inputTextarea.value = demoCSS;
+    // Optionally format on load to show output preview? Not mandatory but nice for first-time user.
+    // Let's do a default formatted preview to showcase formatting capability.
+    setTimeout(() => {
+      const formattedDemo = formatCSS(demoCSS);
+      outputTextarea.value = formattedDemo;
+      updateCounters();
+    }, 10);
+    
+    updateCounters();
+  })();
+</script>
+</body>
+</html>
